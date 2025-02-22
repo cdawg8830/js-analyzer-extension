@@ -1,0 +1,61 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug"]
+assignees:
+  - cdawg8830
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+        Note: This is a private repository. Only authorized contributors can submit issues.
+
+  - type: input
+    id: chrome-version
+    attributes:
+      label: Chrome Version
+      description: What version of Chrome are you using?
+      placeholder: "e.g., 120.0.6099.129"
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us what you expected to happen
+      placeholder: "Describe the bug in detail"
+    validations:
+      required: true
+
+  - type: input
+    id: website
+    attributes:
+      label: Website URL
+      description: On which website did you encounter this issue?
+      placeholder: "https://example.com"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: feature
+    attributes:
+      label: Which feature had the issue?
+      multiple: true
+      options:
+        - Framework Detection
+        - SEO Analysis
+        - Split View
+        - Dynamic Content Detection
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console logs
+      description: Please copy and paste any relevant console logs
+      render: shell 
