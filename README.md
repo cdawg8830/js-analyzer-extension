@@ -1,48 +1,79 @@
-# SEO JavaScript Dependency Analyzer
+# Clif's JavaScript Analyzer
 
-A Chrome extension that helps SEO professionals analyze how JavaScript affects webpage rendering and SEO performance.
+A Chrome extension for analyzing JavaScript framework usage and SEO impact on web pages.
+
+![Extension Icon](icons/icon128.png)
 
 ## Features
 
-- Side-by-side preview of pages with and without JavaScript
-- Detailed analysis of JavaScript dependencies
-- Framework detection (React, Vue, Angular, Next.js, Gatsby)
-- Dynamic content analysis
-- SEO recommendations
+- 🔍 **Framework Detection**: Automatically identifies React, Vue.js, Angular, and Next.js
+- 📊 **JavaScript Dependency Analysis**: Measures dependency levels (Low/Medium/High)
+- 🚀 **SEO Impact Assessment**: Evaluates implications of client-side rendering
+- 🔄 **Dynamic Content Detection**: Identifies dynamically loaded content
+- 💡 **Smart Recommendations**: Provides actionable SEO improvement suggestions
+- 👀 **Split View**: Compare JavaScript-enabled vs disabled versions of pages
 
 ## Installation
 
-1. Clone or download this repository
+### From Chrome Web Store
+1. Visit the [Chrome Web Store page](your_store_link_here)
+2. Click "Add to Chrome"
+3. Confirm the installation
+
+### From Source
+1. Clone this repository
 2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable "Developer mode" in the top right corner
-4. Click "Load unpacked" and select the directory containing this extension
+3. Enable "Developer mode"
+4. Click "Load unpacked"
+5. Select the extension directory
 
 ## Usage
 
-1. Navigate to any webpage you want to analyze
-2. Click the extension icon in your Chrome toolbar
-3. Click "Show Side-by-Side Preview" to see how the page renders with and without JavaScript
-4. Click "Show Analysis Details" to view detailed information about:
-   - JavaScript dependencies
-   - Framework detection
-   - Dynamic content analysis
-   - SEO recommendations
+1. Click the extension icon on any webpage
+2. View the instant analysis of JavaScript usage
+3. Check the SEO impact and recommendations
+4. Use the Split View feature to compare JavaScript-enabled vs disabled versions
 
-## Note About Icons
+## Screenshots
 
-The current version uses placeholder icons. For production use, you should replace the icons in the `icons` directory with your own custom icons in the following sizes:
-- 16x16 pixels (icons/icon16.png)
-- 48x48 pixels (icons/icon48.png)
-- 128x128 pixels (icons/icon128.png)
+### Quick Summary
+![Quick Summary](screenshots/quick-summary.png)
+*Overview of JavaScript usage and framework detection*
 
-## Development
+### SEO Impact Analysis
+![SEO Impact](screenshots/seo-impact.png)
+*Detailed SEO implications and recommendations*
 
-The extension consists of the following files:
-- `manifest.json`: Extension configuration
-- `popup.html`: Extension popup interface
-- `popup.js`: Popup interaction logic
-- `content.js`: Page analysis and preview functionality
+### Split View Comparison
+![Split View](screenshots/split-view.png)
+*Compare pages with and without JavaScript*
+
+## Privacy
+
+- ✅ No data collection
+- ✅ No external servers
+- ✅ All analysis performed locally
+- ✅ Minimal permissions required
+
+Read our full [Privacy Policy](privacy-policy.md)
+
+## Support
+
+For bug reports or feature requests, please [open an issue](../../issues).
 
 ## Contributing
 
-Feel free to submit issues and enhancement requests! 
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## Acknowledgments
+
+- Built with Chrome Extensions Manifest V3
+- Icon design inspired by modern development tools 
