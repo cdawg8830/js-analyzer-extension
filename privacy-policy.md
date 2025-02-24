@@ -1,6 +1,6 @@
 # Privacy Policy for Clif's JavaScript Analyzer
 
-Last Updated: [Current Date]
+Last Updated: [02/24/2025]
 
 ## Introduction
 Clif's JavaScript Analyzer ("the Extension") is committed to protecting your privacy. This Privacy Policy explains our practices regarding the collection, use, and disclosure of information through our Chrome extension.
