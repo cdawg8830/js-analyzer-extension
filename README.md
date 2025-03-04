@@ -1,79 +1,71 @@
-# Clif's JavaScript Analyzer
+# JavaScript Rendering Analyzer
 
-A Chrome extension for analyzing JavaScript framework usage and SEO impact on web pages.
-
-![Extension Icon](icons/icon128.png)
+A Chrome extension that analyzes web pages to determine their rendering approach (Static, Server-Side Rendering, or Client-Side Rendering) and JavaScript dependency level.
 
 ## Features
 
-- 🔍 **Framework Detection**: Automatically identifies React, Vue.js, Angular, and Next.js
-- 📊 **JavaScript Dependency Analysis**: Measures dependency levels (Low/Medium/High)
-- 🚀 **SEO Impact Assessment**: Evaluates implications of client-side rendering
-- 🔄 **Dynamic Content Detection**: Identifies dynamically loaded content
-- 💡 **Smart Recommendations**: Provides actionable SEO improvement suggestions
-- 👀 **Split View**: Compare JavaScript-enabled vs disabled versions of pages
+- **Rendering Type Detection**: Accurately identifies whether a page uses:
+  - Static HTML
+  - Server-Side Rendering (SSR)
+  - Client-Side Rendering (CSR)
+  - Shows percentage breakdown of each approach
+
+- **Framework Detection**: Identifies popular JavaScript frameworks and meta-frameworks:
+  - React & Next.js
+  - Vue & Nuxt.js
+  - Angular & Universal
+  - Svelte & SvelteKit
+  - And more...
+
+- **JavaScript Dependency Analysis**:
+  - Measures JavaScript resource usage
+  - Analyzes runtime behavior
+  - Provides dependency level (Low/Medium/High)
+
+- **SEO Impact Analysis**:
+  - Evaluates content accessibility
+  - Checks meta tags and structure
+  - Provides SEO recommendations
+
+- **No-JavaScript Preview**:
+  - Shows how the page appears without JavaScript
+  - Simulates search engine crawler view
+  - Compares initial vs. final content
 
 ## Installation
 
-### From Chrome Web Store
-1. Visit the [Chrome Web Store page](your_store_link_here)
-2. Click "Add to Chrome"
-3. Confirm the installation
-
-### From Source
-1. Clone this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable "Developer mode"
-4. Click "Load unpacked"
-5. Select the extension directory
+1. Download the extension from the Chrome Web Store
+2. Click the extension icon in your Chrome toolbar
+3. Grant necessary permissions when prompted
 
 ## Usage
 
-1. Click the extension icon on any webpage
-2. View the instant analysis of JavaScript usage
-3. Check the SEO impact and recommendations
-4. Use the Split View feature to compare JavaScript-enabled vs disabled versions
+1. Visit any web page you want to analyze
+2. Click the extension icon
+3. View the detailed analysis in the popup
+4. Click "Show No-JS View" to see how the page appears without JavaScript
 
-## Screenshots
+## Technical Details
 
-### Quick Summary
-![Quick Summary](screenshots/quick-summary.png)
-*Overview of JavaScript usage and framework detection*
+The extension analyzes pages using multiple factors:
 
-### SEO Impact Analysis
-![SEO Impact](screenshots/seo-impact.png)
-*Detailed SEO implications and recommendations*
+- Framework detection through DOM markers and global objects
+- Content ratio comparison between initial and final HTML
+- Resource usage analysis
+- Runtime behavior monitoring
 
-### Split View Comparison
-![Split View](screenshots/split-view.png)
-*Compare pages with and without JavaScript*
+## Privacy & Permissions
 
-## Privacy
-
-- ✅ No data collection
-- ✅ No external servers
-- ✅ All analysis performed locally
-- ✅ Minimal permissions required
-
-Read our full [Privacy Policy](privacy-policy.md)
+This extension:
+- Only analyzes the currently active tab
+- Does not collect or transmit any data
+- Does not modify page content (except when showing the no-JS preview)
+- Requires minimal permissions (activeTab, scripting)
 
 ## Support
 
-For bug reports or feature requests, please [open an issue](../../issues).
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+For issues or feature requests, please visit our GitHub repository.
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
-
-## Acknowledgments
-
-- Built with Chrome Extensions Manifest V3
-- Icon design inspired by modern development tools 
+MIT License - See LICENSE file for details 

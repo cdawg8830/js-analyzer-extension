@@ -1,33 +1,33 @@
 #!/bin/bash
 
-# Remove old package if it exists
-rm -f js-analyzer.zip
+# Remove any existing package
+rm -f extension.zip
 
-# Create screenshots directory if it doesn't exist
-mkdir -p screenshots
+# Create a temporary directory for packaging
+mkdir -p temp_package
 
-# Remove any .DS_Store files
-find . -name ".DS_Store" -delete
+# Copy required files
+cp manifest.json temp_package/
+cp content.js temp_package/
+cp popup.html temp_package/
+cp popup.js temp_package/
+cp LICENSE temp_package/
+cp README.md temp_package/
+cp privacy-policy.md temp_package/
 
-# Create the zip file with required files
-zip -r js-analyzer.zip \
-    manifest.json \
-    popup.html \
-    popup.js \
-    content.js \
-    jspdf.umd.min.js \
-    icons/*.png \
-    icons/*.svg \
-    README.md \
-    LICENSE
+# Create icons directory and copy icons
+mkdir -p temp_package/icons
+cp icons/icon16.png temp_package/icons/
+cp icons/icon48.png temp_package/icons/
+cp icons/icon128.png temp_package/icons/
 
-echo "Package created successfully!"
-echo "Don't forget to create and add promotional images:"
-echo "1. Small tile (440x280)"
-echo "2. Large tile (920x680)"
-echo "3. Marquee (1400x560)"
-echo ""
-echo "And screenshots:"
-echo "1. Quick Summary view"
-echo "2. SEO Impact analysis"
-echo "3. Split View comparison" 
+# Create the ZIP file
+cd temp_package
+zip -r ../extension.zip ./*
+
+# Clean up
+cd ..
+rm -rf temp_package
+
+echo "Package created as extension.zip"
+echo "Ready for Chrome Web Store submission!" 

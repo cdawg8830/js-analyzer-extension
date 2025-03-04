@@ -47,36 +47,75 @@ function updateAnalysisContent(analysis) {
     performance = {},
     links = { total: 0, jsLinks: 0, htmlLinks: 0, brokenLinks: 0 },
     seoIssues = [],
-    dynamicContent = 0
+    dynamicContent = 0,
+    renderingScores = { static: 0.33, ssr: 0.33, csr: 0.34 },
+    dependencyScore = 0.5
   } = analysis;
 
   const formattedFrameworks = frameworks.length > 0
     ? Array.from(new Set(frameworks)).sort().join(', ')
     : 'None detected';
+    
+  // Build rendering type visualization
+  const staticPercent = Math.round(renderingScores.static * 100);
+  const ssrPercent = Math.round(renderingScores.ssr * 100);
+  const csrPercent = Math.round(renderingScores.csr * 100);
+  
+  const renderingVisualization = `
+    <div class="stat">
+      <span class="stat-label">Rendering Spectrum</span>
+      <div class="stat-value" style="display: block; margin-top: 5px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; color: #888;">
+          <span>Static (${staticPercent}%)</span>
+          <span>SSR (${ssrPercent}%)</span>
+          <span>CSR (${csrPercent}%)</span>
+        </div>
+        <div style="display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: #2d2d2d;">
+          <div style="background: #4caf50; height: 100%; width: ${staticPercent}%;"></div>
+          <div style="background: #17a2b8; height: 100%; width: ${ssrPercent}%;"></div>
+          <div style="background: #ff4d4d; height: 100%; width: ${csrPercent}%;"></div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Build dependency visualization as a bar rather than a label
+  const dependencyBar = `
+    <div class="stat">
+      <span class="stat-label">JavaScript Dependency</span>
+      <div class="stat-value" style="display: block; margin-top: 5px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+          <span class="badge ${dependencyClass[dependencyLevel]}" style="font-size: 12px;">${dependencyLevel}</span>
+          <span style="font-size: 12px; color: #888;">${Math.round(dependencyScore * 100)}% dependency</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px; color: #888;">
+          <span>Low</span>
+          <span>Medium</span>
+          <span>High</span>
+        </div>
+        <div style="background: #2d2d2d; height: 8px; border-radius: 4px; position: relative;">
+          <div style="position: absolute; height: 100%; width: 100%;">
+            <div style="background: linear-gradient(to right, #4caf50, #ffd700, #ff4d4d); height: 100%; border-radius: 4px; opacity: 0.8;"></div>
+          </div>
+          <div style="position: absolute; top: -4px; height: 16px; width: 2px; background: #fff; border-radius: 1px; left: ${Math.min(100, Math.round(dependencyScore * 100))}%;"></div>
+        </div>
+      </div>
+    </div>
+  `;
 
   // Build quick summary
   const summaryHtml = `
     <div class="analysis-section">
       <h3>Quick Summary</h3>
-      <div class="stat">
-        <span class="stat-label">JavaScript Dependency</span>
-        <span class="stat-value ${dependencyClass[dependencyLevel]}">${dependencyLevel}</span>
-      </div>
-      <div class="stat">
+      ${renderingVisualization}
+      ${dependencyBar}
+      <div class="stat" style="margin-top: 12px;">
         <span class="stat-label">Script Tags</span>
         <span class="stat-value">${scripts}</span>
       </div>
       <div class="stat">
-        <span class="stat-label">Dynamic Elements</span>
-        <span class="stat-value">${dynamicContent}</span>
-      </div>
-      <div class="stat">
         <span class="stat-label">Frameworks</span>
         <span class="stat-value">${escapeHtml(formattedFrameworks)}</span>
-      </div>
-      <div class="stat">
-        <span class="stat-label">Rendering Type</span>
-        <span class="stat-value">${renderingType}</span>
       </div>
     </div>
   `;
@@ -84,7 +123,7 @@ function updateAnalysisContent(analysis) {
   // Performance
   let performanceHtml = '';
   if (performance.timing) {
-    const { loadTime, firstPaint, firstContentfulPaint } = performance.timing;
+    const { loadTime, firstPaint, firstContentfulPaint, largestContentfulPaint, timeToInteractive } = performance.timing;
     performanceHtml = `
       <div class="analysis-section">
         <h3>Performance Metrics</h3>
@@ -105,7 +144,45 @@ function updateAnalysisContent(analysis) {
           <span class="stat-value ${getPerformanceClass(firstContentfulPaint)}">
             ${formatTime(firstContentfulPaint)}
           </span>
-        </div>
+        </div>`;
+        
+    // Add LCP if available
+    if (largestContentfulPaint) {
+      performanceHtml += `
+        <div class="stat">
+          <span class="stat-label">Largest Contentful Paint</span>
+          <span class="stat-value ${getPerformanceClass(largestContentfulPaint)}">
+            ${formatTime(largestContentfulPaint)}
+          </span>
+        </div>`;
+    }
+    
+    // Add TTI if available
+    if (timeToInteractive) {
+      performanceHtml += `
+        <div class="stat">
+          <span class="stat-label">Time to Interactive</span>
+          <span class="stat-value ${getPerformanceClass(timeToInteractive)}">
+            ${formatTime(timeToInteractive)}
+          </span>
+        </div>`;
+    }
+    
+    // Add resource sizes if available
+    if (performance.resources.totalTransferSize) {
+      const transferSize = (performance.resources.totalTransferSize / 1024).toFixed(1);
+      const decodedSize = (performance.resources.totalDecodedSize / 1024).toFixed(1);
+      
+      performanceHtml += `
+        <div class="stat">
+          <span class="stat-label">Page Size</span>
+          <span class="stat-value">
+            Transfer: ${transferSize}KB | Decoded: ${decodedSize}KB
+          </span>
+        </div>`;
+    }
+    
+    performanceHtml += `
         <div class="stat">
           <span class="stat-label">Resources</span>
           <span class="stat-value">
@@ -149,7 +226,7 @@ function updateAnalysisContent(analysis) {
   const seoIssuesHtml = seoIssues.map(issue => {
     const parts = issue.split(' - ');
     const mainIssue = escapeHtml(parts[0] || '');
-    const recommendation = parts[1] ? `<br><small>${escapeHtml(parts[1])}</small>` : '';
+    const recommendation = parts[1] ? `<br><small style="color: #888;">${escapeHtml(parts[1])}</small>` : '';
     return `
       <div class="stat" style="margin-bottom: 8px;">
         <span class="stat-value" style="display: flex; align-items: flex-start;">
@@ -173,12 +250,12 @@ function updateAnalysisContent(analysis) {
     `;
   }
 
-  content.innerHTML = [
-    summaryHtml,
-    performanceHtml,
-    // linkAnalysisHtml,  // Commented out to hide link analysis
-    seoHtml
-  ].join('\n');
+  // Combine all sections
+  content.innerHTML = `
+    ${summaryHtml}
+    ${performanceHtml}
+    ${seoHtml}
+  `;
 }
 
 /**
@@ -187,7 +264,7 @@ function updateAnalysisContent(analysis) {
 function runAnalysis() {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const activeTab = tabs[0];
-    chrome.tabs.sendMessage(activeTab.id, { action: 'analyze' }, (response) => {
+    chrome.tabs.sendMessage(activeTab.id, { action: 'getAnalysis' }, (response) => {
       if (!response) {
         document.getElementById('analysis-content').innerHTML = `
           <div style="color: #ff4d4d;">
@@ -210,87 +287,22 @@ function togglePreview() {
     if (!tabs[0] || !tabs[0].url || tabs[0].url.startsWith('chrome://')) {
       return;
     }
-
+    
+    const button = document.getElementById('togglePreview');
+    isPreviewActive = !isPreviewActive;
+    
     if (isPreviewActive) {
-      // Hide preview
-      chrome.tabs.sendMessage(tabs[0].id, { action: 'removePreview' });
-      isPreviewActive = false;
-      document.getElementById('togglePreview').innerText = 'Toggle Split View';
-    } else {
-      // Show preview
+      button.classList.add('active');
       chrome.tabs.sendMessage(tabs[0].id, { action: 'showPreview' });
-      isPreviewActive = true;
-      document.getElementById('togglePreview').innerText = 'Close Split View';
+    } else {
+      button.classList.remove('active');
+      chrome.tabs.sendMessage(tabs[0].id, { action: 'removePreview' });
     }
   });
 }
 
-/**
- * Exports the displayed analysis data as a PDF (using jsPDF).
- */
-function exportPDF() {
-  // Example of how you might gather content from the popup and generate PDF.
-  const analysisEl = document.getElementById('analysis-content');
-  const doc = new jsPDF.jsPDF();
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(12);
-  doc.text("Clif's JavaScript Analyzer - Report", 14, 20);
-  doc.setFontSize(10);
-  doc.text(analysisEl.innerText, 14, 30, { maxWidth: 180 });
-  
-  doc.save('analysis_report.pdf');
-}
-
-// Initialize popup
+// Add event listeners when the popup loads
 document.addEventListener('DOMContentLoaded', function() {
-  // Set up button listeners
+  runAnalysis();
   document.getElementById('togglePreview').addEventListener('click', togglePreview);
-  document.getElementById('exportPDF').addEventListener('click', exportPDF);
-
-  // Show loading state
-  const content = document.getElementById('analysis-content');
-  content.innerHTML = `
-    <div class="analysis-section">
-      <h3>Analyzing page...</h3>
-      <div class="stat">
-        <span class="stat-value">Please wait while we analyze the JavaScript content...</span>
-      </div>
-    </div>
-  `;
-
-  // Listen for analysis results
-  chrome.runtime.onMessage.addListener((message) => {
-    if (message.action === 'analysisResult') {
-      if (message.error) {
-        content.innerHTML = `
-          <div class="analysis-section">
-            <h3>Error</h3>
-            <div class="stat">
-              <span class="stat-value">${message.message || 'Analysis failed. Please try again.'}</span>
-            </div>
-          </div>
-        `;
-      } else {
-        updateAnalysisContent(message.result);
-      }
-    }
-  });
-
-  // Get current state and analysis
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    if (!tabs[0] || !tabs[0].url || tabs[0].url.startsWith('chrome://')) {
-      content.innerHTML = `
-        <div class="analysis-section">
-          <h3>Error</h3>
-          <div class="stat">
-            <span class="stat-value">Cannot analyze this page. Please try on a regular web page.</span>
-          </div>
-        </div>
-      `;
-      return;
-    }
-
-    // Request analysis
-    chrome.tabs.sendMessage(tabs[0].id, {action: 'getAnalysis'});
-  });
 });
